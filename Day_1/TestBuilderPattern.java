@@ -1,60 +1,86 @@
-public class TestBuilderPattern {
-    public static void main(String[] args) {
-        Computer c1 = new ComputerBuilder().setRAM("DDR4").getComputer();
-        System.out.println(c1.toString());
-    }
-}
-
 class Computer {
-    String HDD;
-    String RAM;
 
-    boolean isGraphicsCardEnabled;
-    boolean isBluetoothEnabled;
+    // required parameters
+    private String HDD;
+    private String RAM;
+
+    // optional parameters
+    private boolean isGraphicsCardEnabled;
+    private boolean isBluetoothEnabled;
 
     @Override
     public String toString() {
-        return "Computer [HDD=" + HDD + ", RAM=" + RAM + ", isGraphicsCardEnabled=" + isGraphicsCardEnabled
+        return "Computer [HDD=" + HDD + ", RAM=" + RAM + ", isGraphicsCardEnabled=" +
+                isGraphicsCardEnabled
                 + ", isBluetoothEnabled=" + isBluetoothEnabled + "]";
     }
 
-    public Computer(String hDD, String rAM, boolean isGraphicsCardEnabled, boolean isBluetoothEnabled) {
-        HDD = hDD;
-        RAM = rAM;
-        this.isGraphicsCardEnabled = isGraphicsCardEnabled;
-        this.isBluetoothEnabled = isBluetoothEnabled;
+    public String getHDD() {
+        return HDD;
     }
+
+    public String getRAM() {
+        return RAM;
+    }
+
+    public boolean isGraphicsCardEnabled() {
+        return isGraphicsCardEnabled;
+    }
+
+    public boolean isBluetoothEnabled() {
+        return isBluetoothEnabled;
+    }
+
+    private Computer(ComputerBuilder builder) {
+        this.HDD = builder.HDD;
+        this.RAM = builder.RAM;
+        this.isGraphicsCardEnabled = builder.isGraphicsCardEnabled;
+        this.isBluetoothEnabled = builder.isBluetoothEnabled;
+    }
+
+    // Builder Class
+    public static class ComputerBuilder {
+
+        // required parameters
+        private String HDD;
+        private String RAM;
+
+        // optional parameters
+        private boolean isGraphicsCardEnabled;
+        private boolean isBluetoothEnabled;
+
+        public ComputerBuilder(String hdd, String ram) {
+            this.HDD = hdd;
+            this.RAM = ram;
+        }
+
+        public ComputerBuilder setGraphicsCardEnabled(boolean isGraphicsCardEnabled) {
+            this.isGraphicsCardEnabled = isGraphicsCardEnabled;
+            return this;
+        }
+
+        public ComputerBuilder setBluetoothEnabled(boolean isBluetoothEnabled) {
+            this.isBluetoothEnabled = isBluetoothEnabled;
+            return this;
+        }
+
+        public Computer build() {
+            return new Computer(this);
+        }
+
+    }
+
 }
 
-class ComputerBuilder {
-    String HDD;
-    String RAM;
+public class TestBuilderPattern {
 
-    boolean isGraphicsCardEnabled;
-    boolean isBluetoothEnabled;
-
-    public ComputerBuilder setHDD(String hDD) {
-        HDD = hDD;
-        return this;
-    }
-
-    public ComputerBuilder setRAM(String rAM) {
-        RAM = rAM;
-        return this;
-    }
-
-    public ComputerBuilder setGraphicsCardEnabled(boolean isGraphicsCardEnabled) {
-        this.isGraphicsCardEnabled = isGraphicsCardEnabled;
-        return this;
-    }
-
-    public ComputerBuilder setBluetoothEnabled(boolean isBluetoothEnabled) {
-        this.isBluetoothEnabled = isBluetoothEnabled;
-        return this;
-    }
-
-    Computer getComputer() {
-        return new Computer(HDD, RAM, isGraphicsCardEnabled, isBluetoothEnabled);
+    public static void main(String[] args) {
+        // Using builder to get the object in a single line of code and
+        // without any inconsistent state or arguments management issues
+        Computer comp = new Computer.ComputerBuilder(
+                "500 GB", "2 GB").setBluetoothEnabled(true)
+                .setGraphicsCardEnabled(true).build();
+        System.out.println(comp);
     }
 
 }
